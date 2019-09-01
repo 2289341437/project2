@@ -1,0 +1,311 @@
+<div>
+	<div class="user-manage">
+		<!-- 新增用户按钮 -->
+		<div>
+			<button class="btn btn-success pull-right">添加一个新用户</button>
+			<form class="form-horizontal" style="width: 250px">
+				<div class="form-group">
+					<div class="col-md-8">
+						<input class="form-control" type="text" name="" id="selectU">
+					</div>
+					<button class="btn btn-info col-md-4" type="button">查询用户</button>
+				</div>	
+			</form>
+		</div>
+		<!-- 展示用户样式 -->
+		<div class="main row">
+			<div class="user col-md-3">
+				<div class="user-content">
+					<img class="pull-right" src="images/circle.png" id="status" style="width: 15px ;height:15px; ">
+					<img src="images/style-one.jpg" alt="图片迷路了" class="img-circle">
+					<div class="info">
+						<div class="">
+							<span class="span">用户名：</span>
+							<span id="uName"></span>
+						</div>
+						<div class="">
+							<span class="span">真实姓名：</span>
+							<span id="rName"></span>
+						</div>
+						<div class="">
+							<span class="span">注册时间:</span>
+							<span id="rTime">2019-08-09 17:06:25.0</span>
+						</div>
+						<div class="">
+							<span class="span">email：</span>
+							<span id="email"></span>
+						</div>
+						<div class="btn">
+							<button class="btn btn-danger">删除</button>
+							<button class="btn btn-warning">修改</button>
+						</div>
+						
+					</div>
+				</div>	
+			</div>
+			<div class="user col-md-3">
+				<div class="user-content">
+					<img class="pull-right" src="images/circle.png" id="status" style="width: 15px ;height:15px; ">
+					<img src="images/circle.png" alt="图片迷路了" class="img-circle">
+					<div class="info">
+						<div class="">
+							<span class="span">用户名：</span>
+							<span id="uName"></span>
+						</div>
+						<div class="">
+							<span class="span">真实姓名：</span>
+							<span id="rName"></span>
+						</div>
+						<div class="">
+							<span class="span">注册时间:</span>
+							<span id="rTime">2019-08-09 17:06:25.0</span>
+						</div>
+						<div class="">
+							<span class="span">email：</span>
+							<span id="email"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 模态框 -->
+		<div class="modal" id="myModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button class="btn btn-default close" data-dismiss="modal">&times;</button>
+						<span class="modal-title">模态框的标题</span>
+					</div>
+					<div class="modal-body">
+						<!-- 录入信息表单 -->
+						<form action="" class="form-horizontal">
+							<div class="form-group">
+								<label for="name" class="col-md-3 control-label">用户名：</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" id="mUName">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-3 control-label">真实姓名：</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" id="mRName">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-3 control-label">密码：</label>
+								<div class="col-md-6">
+									<input type="password" class="form-control" id="mPwd">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-3 control-label">确认密码：</label>
+								<div class="col-md-6">
+									<input type="password" class="form-control" id="mRPwd">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-3 control-label">邮箱：</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" id="mEmail">
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-default" data-dismiss="modal">取消</button>
+						<button class="btn btn-primary" id="to-save">确认</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		findAllUser();
+		var op = '添加';
+		var updataId = 0;
+		// 查询所有用户信息
+		function findAllUser(){
+			getAjax('/manager/user/findAllUser','get',null,function(res){
+				$('.main').html(null);
+				res.data.forEach(function(item){
+					var status = item.enabled?("images/circle-g.png"):("images/circle.png")
+					item.userface = item.userface?item.userface:'images/circle.png';
+					var objStr = JSON.stringify(item);
+					// 去掉对象字符串里面的空格，不然后面取字符串时，回到空格处断开，后面的会没有。
+					objStr = objStr.split(' ').join('');
+					var str = $(`
+						<div class="user col-md-3">
+							<div class="user-content">
+								<img class="pull-right" src=`+status+` id="status" style="width: 15px ;height:15px; " data-id="`+item.id+`" data-status="`+item.enabled+`">
+								<img src=`+item.userface+` alt="图片迷路了" class="img-circle">
+								<div class="info">
+									<div>
+										<span class="span">用户名：</span>
+										<span id="uName">`+item.username+`</span>
+									</div>
+									<div>
+										<span class="span">真实姓名：</span>
+										<span id="rName">`+item.nickname+`</span>
+									</div>
+									<div>
+										<span class="span">注册时间:</span>
+										<span id="rTime">`+item.regTime+`</span>
+									</div>
+									<div>
+										<span class="span">email：</span>
+										<span id="email">`+item.email+`</span>
+									</div>
+									<div class="">
+										<button class="btn btn-danger" data-id="`+item.id+`">删除</button>
+										<button class="btn btn-warning" data-id="`+item.id+`" data-obj=`+objStr+`>修改</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					`)
+					$('.main').append(str);
+				})
+			},function(error){
+				console.log(error);
+			})
+		}
+		//通过用户名查用户
+		function findUserByUsername(obj){
+			getAjax('/manager/user/findUserByUsername','get',obj,function(res){
+				if(res.data == null){
+					alert('该用户不存在');
+				}else {
+					console.log(res.data);
+					var item = res.data;
+					var status = item.enabled?("images/circle-g.png"):("images/circle.png")
+					item.userface = item.userface?item.userface:'images/circle.png';
+					var str = $(`
+						<div class="user col-md-3">
+							<div class="user-content">
+								<img class="pull-right" src=`+status+` id="status" style="width: 15px ;height:15px; ">
+								<img src=`+item.userface+` alt="图片迷路了" class="img-circle">
+								<div class="info">
+									<div>
+										<span class="span">用户名：</span>
+										<span id="uName">`+item.username+`</span>
+									</div>
+									<div>
+										<span class="span">真实姓名：</span>
+										<span id="rName">`+item.nickname+`</span>
+									</div>
+									<div>
+										<span class="span">注册时间:</span>
+										<span id="rTime">`+item.regTime+`</span>
+									</div>
+									<div>
+										<span class="span">email：</span>
+										<span id="email">`+item.email+`</span>
+									</div>
+									<div class="btn">
+										<button class="btn btn-danger" data-id="`+item.id+`">删除</button>
+										<button class="btn btn-warning" data-id="`+item.id+`">修改</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					`)
+					$('.main').html(str);
+				}	
+			},function(error){
+				alert(error.message);
+			})
+		}
+		//改变用户的状态
+		function changeStatus(obj){
+			getAjax('/manager/user/changeStatus','post',function(res){},function(error){
+				alert(error.message);
+			})
+		}
+		//保存或更新
+		function saveOrUpdateUser(obj){
+			getAjax('/manager/user/saveOrUpdateUser','post',obj,function(res){
+				findAllUser();
+			},function(error){
+				alert(error.message);
+			})
+		}
+		// 点击按钮触发的事件
+		$('button').click(function(event){
+			var target = event.target;
+			// console.log(target);
+			if(target.innerHTML ==='添加一个新用户'){
+				op = '添加';
+				$('.modal input').val(null);
+				$('modal-title').text('添加新用户');
+				$('#myModal').modal('show');
+			}
+			if(target.innerHTML ==='查询用户'){
+				var name = $('#selectU').val();
+				console.log(name);
+				findUserByUsername({username:name});
+			}
+		})
+		//修改用户的状态
+		$('.main').on('click','#status',function(event){
+			var id = +event.target.getAttribute('data-id');
+			var status = event.target.getAttribute('data-status');
+			status = status === 'false'?true:false;
+			var src = status?'images/circle-g.png':'images/circle.png';
+			var obj1 = {
+				id:id,
+				status:status,
+			};
+			console.log(obj);
+			// console.log(event.target.src);
+			// // event.target.src = src;
+			// console.log(event.target.src);
+			changeStatus(obj1);
+			findAllUser();
+		});
+		//修改
+		$('.main').on('click','.btn-warning',function(event){
+			op = '修改';
+			updataId = +event.target.getAttribute('data-id');
+			// console.log(event.target);
+			// var obj = event.target.getAttribute('data-obj');
+			var obj = JSON.parse(event.target.getAttribute('data-obj'));
+			$('.modal #mUName').val(obj.username);
+			$('.modal #mPwd').val(obj.password);
+			$('.modal #mRPwd').val(obj.password);
+			$('.modal #mRName').val(obj.nickname);
+			$('.modal #mEmail').val(obj.email);
+			$('.modal-title').text('修改用户信息');
+			$('#myModal').modal('show');
+		})
+		//点击模态框的确认按钮触发的事件
+		$('.modal-footer .btn-primary').click(function(event){
+			var username = $('#mUName').val();
+			var password = $('#mPwd').val();
+			var mRPwd = $('#mRPwd').val();
+			var nickname = $('#mRName').val();
+			var email = $('#mEmail').val();
+			if(!username || !password || !mRPwd || !email){
+				alert('请输入完整信息');
+			}
+			else if(password !== mRPwd){
+				alert('两次输入的密码不一致');
+			}else {
+				var obj = {
+					username:username,
+					password:password,
+					nickname:nickname,
+					email:email,
+				};
+				if(op === '修改'){
+					obj.id = updataId;
+				};
+				if(op === '添加'){
+					obj.regTime = new Date();
+				};
+				saveOrUpdateUser(obj);
+				findAllUser();
+			}
+			$('#myModal').modal('hide');
+		})
+	</script>
+</div>

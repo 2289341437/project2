@@ -1,0 +1,399 @@
+<!-- 资讯管理 -->
+<div>
+	<div class="info-manage">
+		<!-- 按钮组 -->
+		<div>
+			<button type="button" class="btn btn-success">添加</button>
+			<button type="button" class="btn btn-danger">批量删除</button>
+			<form action="" class="form-horizontal">
+				<div class="form-group">
+					<label for="parent" class="col-md-2 control-label">请选择所属栏目：</label>
+					<div class="col-md-4">
+						<select id="parent-select" class="form-control select">
+							<option>请选择</option>
+						</select>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- 表格组 -->
+		<div class="table-div">
+			<table class="table table-bordered text-center table-hover table-condensed">
+				<thead>
+					<tr>
+						<th>选择</th>
+						<th>编号</th>
+						<th>文章标题</th>
+						<th class="col-md-1">所属栏目</th>
+						<th>排列方式</th>
+						<th>作者</th>
+						<th>发布时间</th>
+						<th class="col-md-1">阅读次数</th>
+						<th class="col-md-1">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="checkbox"/></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<i class="fa fa-pencil-square-o" aria-hidden="true" title="编辑"></i>
+							<i class="fa fa-trash-o" aria-hidden="true" title="删除"></i>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<nav aria-label="Page navigation" class="pull-right">
+				<p id="p">当前第1页</p>
+			  <ul class="pagination">
+			    <li id="Previous">
+			      <a href="#" aria-label="Previous">
+			      	&laquo;
+			        <!-- <span aria-hidden="true">&laquo;</span> -->
+			      </a>
+			    </li>
+			    <li id="Next">
+			      <a href="#" aria-label="Next">
+			        <span aria-hidden="true">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+		<!-- 模态框 -->
+		<div class="modal" id="myModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button class="btn btn-default close" data-dismiss="modal">&times;</button>
+						<span class="modal-title">模态框的标题</span>
+					</div>
+					<div class="modal-body">
+						<!-- 录入信息表单 -->
+						<form action="" class="form-horizontal">
+							<div class="form-group">
+								<label for="title" class="col-md-3 control-label required">文章标题：</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="title" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="parent" class="col-md-3 control-label required">所属栏目：</label>
+								<div class="col-md-4">
+									<select id="parent-select" class="form-control" required>
+										<option>请选择</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label required">列表样式：</label>
+								<div class="col-md-6">
+									<label for="style-one">
+										<input type="radio" name="infoList" id="style-one" value="style-one">
+										<img src="./images/style-one.jpg" alt="">
+									</label>
+									<label for="style-two">
+										<input type="radio" name="infoList" id="style-two" value="style-two">
+										<img src="./images/style-two.jpg" alt="">
+									</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="content" class="col-md-3 control-label">正文：</label>
+								<div class="col-md-8">
+									<textarea id="textarea" class="form-control"></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-default" data-dismiss="modal">取消</button>
+						<button class="btn btn-success" id="to-save">发布</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		var op = '添加';
+		var updataId = 2;
+		var totalpage = 0;
+		var page = 0;
+		var obj = {
+			page:0,
+			pageSize:5,
+		}
+		getParentCategory();
+		findArticle({
+			page:0,
+			pageSize:5,
+		});
+		function handle(){
+			findArticle({
+				page:0,
+				pageSize:5,}
+			);
+		};
+		function handle2(e){
+			alert(e.message)
+		};
+		//获取下拉框里面的数据
+		function getParentCategory(){
+			var str = '<option value="nu">请选择</option>';
+			getAjax('/manager/category/findAllCategory','get',null,function(res){
+					res.data.forEach(function(item){
+						str += '<option value='+item.id+'>'+item.name+'</option>'
+					});
+					$('.modal select').html(str);
+					$('#parent-select').html(str);
+
+				},function(error){
+				alert(error.message);
+			});
+		};
+		//查询文章
+		function findArticle(obj){
+			var str = '';
+			getAjax('/manager/article/findArticle','get',obj,function(res){
+				// console.log(res.data);
+				// totalpage = parseInt(res.data.total/5) + 1;
+				totalpage = Math.ceil(res.data.total/5);
+				// console.log(totalpage)
+				res.data.list.forEach(function(item){
+					// console.log(JSON.stringify(item));
+					// var itemStr = JSON.stringify(item);
+					// console.log(itemStr);
+					item.author = item.author==null?'-':item.author;
+					if(item.category==null){
+						str +=`
+							<tr>
+								<td><input type="checkbox" value="`+item.id+`"/></td>
+								<td>`+item.id+`</td>
+								<td>`+item.title+`</td>
+								<td>-</td>
+								<td>`+item.liststyle+`</td>
+								<td>`+item.author+`</td>
+								<td>`+item.publishtime+`</td>
+								<td>`+item.readtimes+`</td>
+								<td>
+									<i class="fa fa-pencil-square-o" aria-hidden="true" title="编辑" data-id="`+item.id+`" data-categoryId="无"></i>
+									<i class="fa fa-trash-o" aria-hidden="true" title="删除" data-id="`+item.id+`"></i>
+								</td>
+							</tr>
+						`
+					}else {
+						str +=`
+						<tr>
+							<td><input type="checkbox" value="`+item.id+`"/></td>
+							<td>`+item.id+`</td>
+							<td>`+item.title+`</td>
+							<td>`+item.category.name+`</td>
+							<td>`+item.liststyle+`</td>
+							<td>`+item.author+`</td>
+							<td>`+item.publishtime+`</td>
+							<td>`+item.readtimes+`</td>
+							<td>
+								<i class="fa fa-pencil-square-o" aria-hidden="true" title="编辑" data-id="`+item.id+`" data-categoryId="`+item.category.id+`"></i>
+								<i class="fa fa-trash-o" aria-hidden="true" title="删除" data-id="`+item.id+`"></i>
+							</td>
+						</tr>
+					`
+					}
+				});				
+				$('tbody').html(str);
+				// var strUl = `<li id="Previous">
+			 //      <a href="#" aria-label="Previous">
+			 //        &laquo;
+			 //      </a>
+			 //    </li>`;
+				var strUl = ``;
+				for (var i = 0; i < totalpage; i++) {
+					strUl += `<li><a href="#">`+(i+1)+`</a></li>`;
+				}
+				// strUl += `<li id="Next">
+			 //      <a href="#" aria-label="Next">
+			 //        &raquo;
+			 //      </a>
+			 //    </li>`;
+			    $('ul[class=pagination]').html(strUl);
+			},function(error){
+				alert(error.message);
+			})
+		};
+		//通过id来删除文章
+		function deleteArticleById(obj){
+			getAjax('/manager/article/deleteArticleById','get',obj,handle(),function(error){
+				alert(error.message);
+			});
+		}
+		//批量删除
+		function batchDeleteArticle(obj){
+			getAjax('/manager/article/batchDeleteArticle','post',obj,handle(),function(error){
+				alert(error.message);
+			});
+		}
+		//保存或更新
+		function saveOrUpdateArticle(obj){
+			getAjax('/manager/article/saveOrUpdateArticle','post',obj,handle(),function(error){
+				alert(error.message);
+			});
+		}
+		//通过下拉框来查询文章
+		$('.select').change(function(event){
+			var categoryId = $('.select').val();
+			// var parentId = $('.select').val();
+			if(categoryId=='请选择' || categoryId=='无父栏目'){
+				findArticle({
+					page:0,
+					pageSize:5,
+				})
+			}else {
+				findArticle({
+					page:0,
+					pageSize:5,
+					categoryId:categoryId
+				})
+			}	
+		});
+		//通过id来删
+		$('tbody').on('click','.fa-trash-o',function(event){
+			var id = event.target.getAttribute('data-id');
+			console.log(id);
+			deleteArticleById({id:id});
+			findArticle(obj);
+		})
+		//修改
+		$('tbody').on('click','.fa-pencil-square-o',function(event){
+			op = '修改';
+			updataId = +event.target.getAttribute('data-id');
+			categoryId = event.target.getAttribute('data-categoryId');
+
+			if(categoryId !=='无'){
+				obj.categoryId = +categoryId;
+			}
+			getAjax('/manager/article/findArticle','get',obj,function(res){
+				var obj2 = res.data.list.filter(function(item){
+					return item.id == updataId;
+				})[0];
+				// console.log(obj2.publishtime);
+				// console.log(obj2);
+				$('.modal #title').val(obj2.title);
+				$('.modal textarea').val(obj2.content);
+				if(obj2.category !== null){
+					// console.log(obj2.category.id);
+					$('.modal select option[value='+obj2.category.id+']').prop('selected',true);
+				}else {
+					$('.modal select option[value="nu"]').prop('selected',true);
+				}
+				$('.modal [type=radio][value='+obj2.liststyle+']').prop('checked',true);
+				$('.modal-title').text('修改资讯');
+				$('#myModal').modal('show');
+			})
+		});
+		//点击按钮触发的事件
+		$('button').click(function(event){
+			var target = event.target;
+			if(target.innerHTML ==='添加'){
+				op = '添加';
+				$('.modal-title').text('发布资讯');
+				$('.modal input,.modal textarea').val(null);
+				$('.modal [type=radio]:checked').prop('checked',false);
+				getParentCategory();
+				$('#myModal').modal('show');
+			};
+			if(target.innerHTML ==='批量删除'){
+				var inputs = Array.prototype.slice.call($('input'), 0);
+				var ids = inputs.filter(function(item){
+					return item.checked;
+				}).map(function(item){
+					return +item.value;
+				});
+				if(ids.length != 0){
+					batchDeleteArticle({ids:ids.join()});
+				}else {
+					alert('请选择要删除的资讯');
+				}
+			}
+		})
+		//模态框点击保存触发的事件
+		$('.modal #to-save').click(function(){
+			var title = $('.modal #title').val();
+			var categoryId = $('.modal select').val();
+			var liststyle = $('.modal [name="infoList"]:checked').attr('id');
+			var content = $('modal textarea').val();
+			var obj = {
+				title:title,
+				categoryId:categoryId,
+				liststyle:liststyle,
+				publishtime:new Date(),
+				readtimes:0,
+
+			}
+			if(content){obj.content=content};
+			if(op =='修改'){
+				obj.id=updataId;
+			}
+			// console.log($('.modal [type=radio]:checked'))
+			// console.log(liststyle);
+			// console.log(obj);
+			saveOrUpdateArticle(obj);
+			findArticle({
+				page:0,
+				pageSize:5,
+			})
+			$('#myModal').modal('hide');
+		})
+		//
+		// var ul = document.getElementsByClassName('pagination')[0];
+		// if(page == 0){
+		// 		console.log('------');
+		// 		console.log($('ul[class=pagination]'))
+		// 		console.log(ul);
+		// 		console.log(ul.children[0]);
+		// 		ul.children[0].setAttribute("class","disabled")
+		// 		// $('.pagination :first-Child').addClass('disabled');
+		// 	}
+		$('ul[class=pagination]').on('click','li',function(event){
+			// console.log(event.target);
+			// console.log(event.target.getAttribute('aria-label') == 'Previous');
+			
+			// var ul = document.getElementsByClassName('pagination')[0];
+			// if(page == 0){
+			// 	console.log('------');
+			// 	console.log($('ul[class=pagination]'))
+			// 	console.log(ul);
+			// 	console.log(ul.children[0]);
+			// 	ul.children[0].setAttribute("class","disabled")
+			// 	// $('.pagination :first-Child').addClass('disabled');
+			// }
+			// if(page == totalpage-1){
+			// 	alert(1111);
+			// 	ul.children[page].setAttribute("class","disabled")
+			// }
+			if(event.target.getAttribute('aria-label') == 'Previous'){
+				// alert(111);
+				--page;
+				// if (page <= 0) {}
+			} else if (event.target.getAttribute('aria-label') == 'Next') {
+				++page;
+				
+			}else {
+				var n = event.target.innerHTML - 1;
+				page = n;
+			}
+			// console.log(page,11111);
+			findArticle({
+				page:page,
+				pageSize:5,
+			})
+			$('#p').html('当前第'+(page+1)+'页');
+			// console.log(page);
+		})
+	</script>
+</div>

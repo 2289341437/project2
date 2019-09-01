@@ -1,0 +1,176 @@
+/*index.html全局样式*/
+*{
+	margin: 0;
+	padding: 0;
+}
+nav,header,img,article{
+	display: block;
+}
+html,body{
+	height: 100%;
+}
+body{
+	display: flex;
+}
+.border{
+	border: 1px solid red;
+}
+/*左侧的元素*/
+.info-left{
+	width: 200px;
+	/*background-color: cyan;*/
+}
+.info-right{
+	flex: 1;
+	/*width: 1080px;*/
+	/*background-color: coral;*/
+}
+/*头部*/
+.info-left>header,.info-right>header{
+	height: 60px;
+	background-color: #ccc;
+}
+.info-right .info-content{
+	height: calc(100% - 60px);
+	overflow: auto;
+	padding: 10px;
+}
+.info-left nav{
+	height: calc(100% - 60px);
+	background-color: #3E93C9;
+	border-right:1px solid #ccc;
+}
+.info-left>header{
+	background-color: #3d556d;
+	line-height: 60px;
+	font-size: 20px;
+	color: #fff;
+}
+.info-left>header img{
+	float: left;
+	margin: 10px 20px;
+	width: 40px;
+	height: 40px;
+}
+.info-left li{
+	line-height: 40px;
+	padding: 5px 10px;
+}
+.info-left li span{
+	display: inline-block;
+	/*color: #fff;*/
+	width: 110px;
+}
+.info-left li i{
+	height: 30px;
+	width: 30px;
+}
+.info-left li:hover{
+	color:  #3d556d;
+	background-color: #03C1AF;
+}
+.table-div{
+	margin-top: 10px;
+}
+.table-div th{
+	text-align: center;
+}
+.table-div td i{
+	cursor: pointer;
+	margin-right: 10px;
+}
+.table-div td i:last-child{
+	margin-right: 0px;
+}
+.table-div td i[title=编辑]{
+	color: #5cb85c;
+}
+.table-div td i[title=删除]{
+	color: #c9302c;
+}
+.required::before{
+	content: '*';
+	color: red;
+}
+.info-right .info-content{
+	width: 1080px;
+	margin: 0 auto;
+}
+.info-right header{
+	background-color: #3E93C9;
+}
+.info-right i{
+	margin: 15px;
+}
+.info-right .myBadge{
+	display: inline-block;
+	background-color: red;
+	border-radius: 50%;
+	position: relative;
+	height: 18px;
+	width: 18px;
+	left: -8px;
+	top: -9px;
+	font-size: 18px;
+	text-align: center;
+	color: #fff;
+
+}
+.myHiden{
+	display: none;
+}
+/*资讯管理*/
+.info-manage #myModal img{
+	width: 240px;
+	height: 100px;
+}
+.info-manage td{
+	height: 25px;
+}
+.info-manage #myModal textarea{
+	height: 150px;
+}
+.info-manage .pagination li:hover{
+	background-color: #03C1AF
+}
+#p{
+	text-align: center;
+}
+.displayn{
+	display: none;
+}
+.bg{
+	background-color:#03C1AF; 
+}
+/*用户管理*/
+.user-manage .main{
+	margin: 20px;
+}
+.user-manage .user{
+	padding: 10px;
+	
+}
+.user-manage .user-content{
+	padding: 5px 0;
+	box-shadow: 3px 3px 3px #cccccc; 
+	background-color: #D9EDF7;
+}
+.user-manage .user img{
+	margin: 0 auto;
+	width: 130px;
+	height: 130px;
+}
+.user-manage .user span{
+	display: inline-block;
+	/*height: 25px;
+	line-height: 25px;*/
+}
+.user-manage .user .span{
+	margin: 10px 10px;
+}
+.user-manage .user button{
+	margin: 0 24px;
+}
+.home div{
+	margin: 0 auto;
+}

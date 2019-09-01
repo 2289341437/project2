@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>看点资讯项目</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap-3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="CSS/index.css">
+	<link rel="stylesheet" type="text/css" href="CSS/font-awesome-4.7.01/font-awesome-4.7.0/css/font-awesome.min.css">
+	<script src="JS/jquery-3.4.1.min.js"></script>
+	<script src="JS/index.js"></script>
+	<script type="text/javascript" src="bootstrap-3.3.7/js/bootstrap.min.js"></script>
+	<script src="JS/ajax.js"></script>
+	<script src="JS/echarts.js"></script>
+	<!--  -->
+	<script>
+		$(function(){
+			$('#toggleLeft').click(function(){
+				console.log(1111);
+				$('.info-left').toggleClass('myHiden');
+			})
+		})
+	</script>
+</head>
+<body>
+	<!-- //左侧 -->
+	<div class="info-left">
+		<header>
+			<img src="images/logo.jpg">
+			<span>看点咨询</span>
+		</header>
+		<!-- //左侧导航 -->
+		<nav>
+			<ul>
+				<li>
+					<i class="fa fa-h-square fa-lg" aria-hidden="true"></i>
+					<span>首页</span>
+					<i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
+				</li>
+				<li>
+					<i class="fa fa-bars fa-lg" aria-hidden="true"></i>
+					<span>栏目管理</span>
+					<i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
+				</li>
+				<li>
+					<i class="fa fa-newspaper-o fa-lg" aria-hidden="true"></i>
+					<span>资讯管理</span>
+					<i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
+				</li>
+				<li>
+					<i class="fa fa-user fa-lg" aria-hidden="true"></i>
+					<span>用户管理</span>
+					<i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<!-- //右侧 -->
+	<div class="info-right">
+		<header>
+			<div>
+				<i class="fa fa-list fa-2x" aria-hidden="true" id="toggleLeft"></i>
+				<i class="fa fa-bell fa-2x" aria-hidden="true"><span class="myBadge">4</span></i>
+			</div>
+			
+		</header>
+		<div class="info-content">
+			内容
+		</div>
+	</div>
+</body>
+</html>
